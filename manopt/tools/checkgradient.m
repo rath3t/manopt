@@ -62,7 +62,7 @@ function checkgradient(problem, x, d)
     if ~d_isprovided
         d = problem.M.randvec(x);
     end
-
+trace(x\d)
     %% Check that the gradient yields a first order model of the cost.
     
     % Call checkdiff with force_gradient set to true, to force that
