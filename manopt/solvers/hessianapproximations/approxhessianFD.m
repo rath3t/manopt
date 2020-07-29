@@ -136,10 +136,10 @@ function hessfd = hessianFD(stepsize, problem, x, xdot, storedb, key)
     % Determine how far to retract xdot, so that the point reached does not
     % depend on the norm of xdot. This is what ensures radial linearity of
     % this present Hessian approximation.
-    c = stepsize / norm_xdot;
+    c = 1i*stepsize / norm_xdot;
     
     % Compute the gradient at the current point.
-    grad = getGradient(problem, x, storedb, key);
+%     grad = getGradient(problem, x, storedb, key);
     
     % Compute a point a little further along xdot, and the gradient there.
     % Since this is a new point, we need a new key for it, for storedb.
@@ -155,6 +155,7 @@ function hessfd = hessianFD(stepsize, problem, x, xdot, storedb, key)
     grad1 = problem.M.transp(x1, x, grad1);
     
     % Return the finite difference of them: (grad1 - grad)/c.
-    hessfd = problem.M.lincomb(x, 1/c, grad1, -1/c, grad);
+%     hessfd = problem.M.lincomb(x, 1/c, grad1, -1/c, grad);
+hessfd = imag(grad1)/(stepsize / norm_xdot);
     
 end
