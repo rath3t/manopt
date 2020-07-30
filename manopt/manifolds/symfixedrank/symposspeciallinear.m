@@ -77,6 +77,8 @@ function M = symposspeciallinear(n)
     trAB = @(A, B) vec(A.').'*vec(B);  % = trace(A*B)
     trAA = @(A) sqrt(trAB(A, A));    % = sqrt(trace(A^2))
     
+    
+    
     % Helper to normalize Matrix to unit determinant
     M.normalizetounitdet = @(A) A/power(det(A),1/n);
     
@@ -104,6 +106,7 @@ function M = symposspeciallinear(n)
     function eta = egrad2rgrad(X, eta)
         eta = X*symm(eta)*X-1/n*trAB(X,symm(eta))*X;
 %           eta = symm(eta)-1/n*trAB(inv(X),symm(eta))*(X);
+
     end
     
     
@@ -111,15 +114,27 @@ function M = symposspeciallinear(n)
     function Hess = ehess2rhess(X, egrad, ehess, eta)
         % Directional derivatives of the Riemannian gradient
 %         Hess = X*symm(ehess)*X + 2*symm(eta*symm(egrad)*X)-1/n*(trAB(X,eta)*egrad+trAB(egrad,X)*eta+trAB(X,ehess)*X);
-        Hess = X* M.proj(X,ehess)*X-M.proj(X,1/n*(trAB(X,eta)*egrad+trAB(egrad,X)*eta+trAB(X,ehess)*X));
+%         Hess =  M.proj(X*ehess*X,eta)-2/n*X*trAB(egrad,symm(eta))+1/n^2*trAB(egrad,X)*eta+1/n*trace(symm(eta))*eye(n)*trAB(egrad,X);
+
+Hess =  M.proj(X,X*symm(ehess)*X-1/n*trAB(X,symm(ehess))*X      )...
+       -M.proj(X,   -1/n*(trAB(symm(inv(X))*symm(egrad)*X,symm(eta))*(X) + trAB((X),symm(egrad))*symm(eta)  )              );
+%                 Hess =  X*M.proj(X,ehess)*X;
+%                 Hess = M.proj(X,Hess);
+%                 Hess =Hess-2/n*inv(X)* trAB(symm(egrad),symm(X*X*eta))+1/n^2*inv(X)*trAB(X,symm(eta))*trAB(X,symm(egrad))...
+%                     +1/n*   fourthOrderMultiplication(X,inv(X),symm(eta))    *trAB(X,symm(egrad));
+% Hess =  M.proj(X*ehess*X,symm(eta))+symm(eta)*egrad*X+X*egrad*symm(eta)-1/n*trAB(symm(eta),egrad)*X-1/n*trAB(X,egrad)*symm(eta);
         % Correction factor for the non-constant metric
-%         Hess = Hess - symm(eta*symm(egrad)*X);
+%         symm(eta*symm(egrad)*X)
+%         Hess = Hess + symm(eta*symm(egrad)*X);
+%         symm(eta*symm(egrad)*X)
 %         Hess = M.proj(X,Hess);
+%         M.proj(X,symm(eta))-symm(eta)
+        
     end
     
     
-%     M.proj = @(X, eta) X*symm(eta)*X-1/n*trAB(X,symm(eta))*(X);
-        M.proj = @(X, eta) symm(eta)-1/n*trAB(inv(X),symm(eta))*(X);
+    M.proj = @(X, eta) symm(eta)-1/n*trAB(inv(X),symm(eta))*(X);
+%         M.proj = @(X, eta) symm(eta);
 
 
     

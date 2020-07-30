@@ -11,15 +11,17 @@ function Test_symposspeciallinear()
     % Problem
     n = 5;
     B = randn(n, n);
-%     B = eye(n);
-%     B(1,1)=1;
+%     B = eye(n,n);
+%     B(1,1)=B(1,1)+1;
+%     B(2,1)=B(2,1)+1;
     C = B'*B;
     
     
     % Create the manifold structure
     problem.M = symposspeciallinear(n);
     problem.M.transp = problem.M.paralleltransp;
-%     problem.M.retr = problem.M.exp;
+    problem.M.retr = problem.M.exp; %man kann nicht expm benutzen für
+%     compelx step!
     % creating a symmetric matrix of ones and zeros
 %     f = 0.1; % % fraction of ones
 %     length_of_vector = n*(n-1)/2;
@@ -42,11 +44,11 @@ function Test_symposspeciallinear()
     end
     
     
-    % Hessian description
-%     problem.hess = @(X, U) problem.M.ehess2rhess(X, egrad(X), ehess(X, U), U);
-%     function Hess = ehess(X, eta)
-%         Hess = C*C*eta;
-%     end
+%     % Hessian description
+    problem.hess = @(X, U) problem.M.ehess2rhess(X, egrad(X), ehess(X, U), U);
+    function Hess = ehess(X, eta)
+        Hess = C*C*eta;
+    end
     
       % Initialization
 
@@ -54,23 +56,23 @@ function Test_symposspeciallinear()
 %             X0 = [1 0; 0 2]
 %            d0 =  [  -0.128326596995917  -0.242841769548604;  -0.242841769548604   0.256653193991834];
 %             trace(X0\d0) 
-    checkgradient(problem);
-    drawnow;
+%     checkgradient(problem);
+%     drawnow;
 %     pause;
     checkhessian(problem);
 %     drawnow;
 %     pause;
     
 % %         X0 = [1 1; 1 2]
-X0=problem.M.rand()
+X0=eye(n);
 det(X0)
 eta0=problem.M.randvec(X0);
-trace(X0\eta0)
+% trace(X0\eta0)
 
     det(X0)
   
     % Options (not mandatory)
-    options.maxiter = 10;
+    options.maxiter = 100;
     options.maxinner = 30;
     options.maxtime = 120;
     options.tolgradnorm = 1e-12;
