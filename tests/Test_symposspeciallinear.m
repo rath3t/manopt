@@ -9,12 +9,12 @@ function Test_symposspeciallinear()
 % Change log:
 
     % Problem
-    n = 5;
-    B = randn(n, n);
+    n = 10;
+    B = randn(n, n)/10;
 %     B = eye(n,n);
-%     B(1,1)=B(1,1)+1;
-%     B(2,1)=B(2,1)+1;
-    C = B'*B;
+    B(1,1)=B(1,1)+1;
+    B(2,1)=B(2,1)+1;
+    C = B'*B
     
     
     % Create the manifold structure
@@ -72,16 +72,18 @@ eta0=problem.M.randvec(X0);
     det(X0)
   
     % Options (not mandatory)
-    options.maxiter = 100;
-    options.maxinner = 30;
+    options.maxiter = 20;
+    options.maxinner = 1000;
     options.maxtime = 120;
-    options.tolgradnorm = 1e-12;
+    options.tolgradnorm = 1e-10;
     
     % Pick an algorithm to solve the problem
     [Xopt, costopt, info] = trustregions(problem, X0, options);
 %         [Xopt costopt info] = conjugategradient(problem, X0, options);
 %         [Xopt costopt info] = steepestdescent(problem, X0, options);
     Xopt
-    det(Xopt)
+    detC =det(Xopt)
+    [eigCvec,eigCval] = eig(Xopt)
+    C
 end
 

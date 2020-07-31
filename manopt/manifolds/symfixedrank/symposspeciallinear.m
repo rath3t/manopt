@@ -121,9 +121,9 @@ BlueAndBlack= M.proj(X,X*symm(ehess)*X-1/n*trAB(X,symm(ehess))*X      );   % EQ1
 Red = -M.proj(X,   1/n*( + X*trAB(symm(egrad),symm(eta))  )              );  %EQ2 is zero since proj(X)=0
 Green = M.proj(X,   1/n*(  trAB((X),symm(egrad))*symm(eta)  )              ); % EQ3
 Purple = -M.proj(X,      1/n*(  egrad*X*X *trace(      X\symm(eta)))     ); % EQ4 is zero since trace( X\symm(eta))
-OrangeAndGray = M.proj(X,     (1)/n^2*(  X   * trace(X\symm(eta)))   * trAB(egrad,X)     );
+OrangeAndGray = M.proj(X,     (1)/n^2*(  X   * trace(X\symm(eta)))   * trAB(egrad,X)     ); % EQ5 is zero since trace( X\symm(eta))
 
-Hess =  BlueAndBlack+Green+OrangeAndGray;
+Hess =  BlueAndBlack+Green;
 %   Hess =  BlueAndBlack+...                                                                             %%%%red
 %        +M.proj(X,   1/n*( + trAB((X),symm(egrad))*symm(eta)  )              );
 %    B= 1/n*(  egrad*X*X *trace(      X\symm(eta)))
@@ -136,7 +136,8 @@ Hess =  BlueAndBlack+Green+OrangeAndGray;
 % Hess =  M.proj(X*ehess*X,symm(eta))+symm(eta)*egrad*X+X*egrad*symm(eta)-1/n*trAB(symm(eta),egrad)*X-1/n*trAB(X,egrad)*symm(eta);
         % Correction factor for the non-constant metric
 %         symm(eta*symm(egrad)*X)
-%         Hess = Hess - symm(eta*symm(egrad)*X);
+% test= M.proj(X,2*egrad*(X\eta))
+%         Hess = Hess +M.proj(X,2*egrad*(X\eta));
 %         symm(eta*symm(egrad)*X)
 %         Hess = M.proj(X,Hess);
 %         M.proj(X,symm(eta))-symm(eta)
