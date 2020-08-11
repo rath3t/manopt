@@ -67,12 +67,12 @@ function hessfd = getHessianFD(problem, x, d, storedb, key)
     % If you need to change this parameter, use approxhessianFD explicitly.
     % A power of 2 is chosen so that scaling by epsilon does not incur any
     % round-off error in IEEE arithmetic.
-    epsilon = 2^-35;
+    epsilon = 2^-14;
         
-    c = 1i*epsilon/norm_d;
+    c = epsilon/norm_d;
     
     % Compute the gradient at the current point.
-%     grad = getGradient(problem, x, storedb, key);
+    grad = getGradient(problem, x, storedb, key);
     
     % Compute a point a little further along d and the gradient there.
     % Since this is a new point, we need a new key for it, for the storedb.
@@ -88,9 +88,8 @@ function hessfd = getHessianFD(problem, x, d, storedb, key)
     grad1 = problem.M.transp(x1, x, grad1);
     
     % Return the finite difference of them.
-%     hessfd = problem.M.lincomb(x, 1/c, grad1, -1/c, grad);
-    hessfd = imag(grad1)/(epsilon/norm_d);
-    hessfd=problem.M.proj(x,hessfd);
+    hessfd = problem.M.lincomb(x, 1/c, grad1, -1/c, grad);
+
     % Note: if grad and grad1 are relatively large vectors, then computing
     % their difference to obtain hessfd can result in large errors due to
     % floating point arithmetic. As a result, even though grad and grad1
